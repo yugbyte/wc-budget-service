@@ -11,8 +11,11 @@ repositories {
 
 
 dependencies {
-    implementation 'io.quarkus:quarkus-container-image-docker'
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+    implementation 'io.quarkus:quarkus-rest-client'
+    implementation("io.quarkus:quarkus-rest-client-jackson")
+    implementation 'io.quarkus:quarkus-smallrye-reactive-messaging'
+    implementation 'io.quarkus:quarkus-container-image-docker'
     implementation 'io.quarkus:quarkus-rest'
     implementation 'io.quarkus:quarkus-rest-jackson'
     implementation 'io.quarkus:quarkus-reactive-pg-client'
@@ -21,9 +24,11 @@ dependencies {
     implementation 'io.quarkus:quarkus-hibernate-reactive-panache'
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     implementation 'org.apache.commons:commons-lang3:3.14.0'
+    implementation 'io.quarkus:quarkus-hibernate-validator'
+    implementation 'org.apache.commons:commons-collections4:4.5.0-M1'
+    implementation 'io.quarkus:quarkus-liquibase'
 
     compileOnly 'org.projectlombok:lombok:1.18.32'
-
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 

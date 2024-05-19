@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="liquibase" >
+        <createTable tableName="expense_budget" schemaName="budget">
+            <column name="id" type="uuid" defaultValue="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="expense_budget_pk" />
+            </column>
+            <column name="name" type="text" remarks="name of the budget">
+                <constraints nullable="false" unique="true" uniqueConstraintName="expense_budget_name_unique" />
+            </column>
+            <column name="status" type="char(1)" defaultValue="A">
+                <constraints nullable="false" />
+            </column>
+            <column name="user_id" type="numeric">
+                <constraints nullable="false" />
+            </column>
+            <column name="tags" type="text" remarks="comma separated tags">
+                <constraints nullable="false" />
+            </column>
+            <column name="currency" type="text" defaultValue="USD">
+                <constraints nullable="false" />
+            </column>
+            <column name="created_ts" type="timestamp" defaultValue="localtimestamp()">
+            </column>
+            <column name="modified_ts" type="timestamp" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="liquibase">
+        <createTable tableName="expense_budget_detail" schemaName="budget">
+            <column name="id" type="uuid" defaultValue="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="expense_budget_detail_pk" />
+            </column>
+            <column name="expense_budget_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="expense_budget_detail__budget_id_fk"
+                             references="budget.expense_budget(id)" />
+            </column>
+            <column name="expense_name" type="text">
+                <constraints nullable="false" unique="true" uniqueConstraintName="expense_budget_detail_exp_name_idx" />
+            </column>
+            <column name="budget_amount" type="double precision" defaultValue="0.0">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_recurring" type="boolean" defaultValue="false"/>
+            <column name="created_ts" type="timestamp" defaultValue="localtimestamp()"/>
+            <column name="modified_ts" type="timestamp" />
+            <column name="tags" type="text">
+                <constraints nullable="false" />
+            </column>
+            <column name="category" type="text">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="liquibase">
+        <sql>
+            ALTER TABLE budget.expense_budget OWNER TO roach;
+            ALTER TABLE budget.expense_budget_detail OWNER TO roach;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

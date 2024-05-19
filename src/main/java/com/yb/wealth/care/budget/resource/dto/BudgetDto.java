@@ -9,11 +9,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class BudgetDto {
+public class BudgetDto extends BudgetBaseDto {
     private String id;
-    private String name;
-    private Instant createdDate;
     private String status;
-    private Currency currency;
-    private List<String> tags;
+    private List<BudgetExpenseDetailsItemDto> budgetExpenseItems;
 }
