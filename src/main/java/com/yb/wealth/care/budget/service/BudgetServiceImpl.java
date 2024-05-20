@@ -71,13 +71,14 @@ public class BudgetServiceImpl implements BudgetService {
         expenseBudget.setStatus(BudgetStatus.A.name());
         log.info("Persisting: {}", expenseBudget);
         return expenseBudgetRepository
-                .deactivateCurrentBudget()
+                .findBudgetForUserWithBudgetName(expenseBudget.getUserId(), expenseBudget.getName())
+                .onItem()
+                .ifNotNull()
+                .failWith(() -> new BadRequestException(String.format(ErrorMessages.ERROR_DUPLICATE_BUDGET, budgetBaseDto.getName())))
+                .replaceWith(expenseBudgetRepository.deactivateCurrentBudget())
                 .flatMap(isSuccess -> this.saveBudget(expenseBudget, uriInfo))
                 .onFailure()
-                .transform(Unchecked.function(error -> {
-                    log.error(ErrorMessages.ERROR_CREATING_BUDGET, error);
-                    throw new WebApplicationException(ErrorMessages.ERROR_CREATING_BUDGET);
-                }));
+                .transform(ExceptionHandler::handleInsertError);
     }
 
     @Override
@@ -125,7 +126,7 @@ public class BudgetServiceImpl implements BudgetService {
     private void validateCurrency(String currencyStr) {
         Currency currency = Currency.getFromString(currencyStr);
         if (currency == null) {
-            throw new BadRequestException("Invalid Currency: " +currencyStr);
+            throw new BadRequestException(String.format(ErrorMessages.INVALID_CURRENCY ,currencyStr));
         }
     }
 

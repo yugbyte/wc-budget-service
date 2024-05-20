@@ -7,4 +7,6 @@ public class ErrorMessages {
     public static final String UNKNOWN_ERROR = "Something went wrong. Please try later.";
     public static final String ERROR_INVALID_CATEGORY = "Invalid expense category:";
     public static final String ERROR_DUPLICATE_ENTRY = "Invalid Entry. Entry for %s already exists.";
+    public static final String ERROR_DUPLICATE_BUDGET = "Budget  %s already exists.";
+    public static final String INVALID_CURRENCY = "Invalid Currency: %s";
 }

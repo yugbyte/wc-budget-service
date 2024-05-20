@@ -57,7 +57,7 @@ public class BudgetDetailServiceImpl implements BudgetDetailsService {
         return expenseBudgetRepository.findActiveBudgetForUser(1)
                 .map(expenseBudget -> checkForDuplicateExpenseItem(expenseBudget, expenseDetailItemUpsertDto))
                 .map(expenseBudget -> {
-                    validateExpenseCategory(expenseDetailItemUpsertDto.getExpenseCategory());
+                    validateExpenseCategory(expenseDetailItemUpsertDto.getCategory());
                     return expenseBudget;
                 })
                 .map(expenseBudget -> {

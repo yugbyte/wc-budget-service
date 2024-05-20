@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class BudgetExpenseDetailsBaseItemDto {
@@ -16,5 +18,5 @@ public class BudgetExpenseDetailsBaseItemDto {
     @NotBlank(message = "Expense Category is Required")
     private String category;
     private String icon;
-    private String tags;
+    private List<String> tags;
 }

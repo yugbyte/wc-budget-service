@@ -23,7 +23,6 @@ public class ExceptionHandler {
         } else if (error instanceof BadRequestException) {
             return error;
         } else {
-            log.error(ErrorMessages.ERROR_UPDATING_BUDGET, error);
             return new WebApplicationException(message);
         }
     }

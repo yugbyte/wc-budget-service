@@ -19,6 +19,7 @@ public class ExceptionMapper {
 
     @ServerExceptionMapper
     public RestResponse<ErrorDto> mapBadRequestException(BadRequestException x) {
+        log.debug(x.getMessage(), x);
         List<String> errors = new ArrayList<>();
         errors.add(x.getMessage());
         return RestResponse.status(Response.Status.BAD_REQUEST, ErrorDto.builder().messages(errors).build());
@@ -33,6 +34,7 @@ public class ExceptionMapper {
 
     @ServerExceptionMapper
     public RestResponse<ErrorDto> constraintException(ConstraintViolationException x) {
+        log.debug(x.getMessage(), x);
         List<String> errors = new ArrayList<>();
         x.getConstraintViolations().forEach(message -> errors.add(message.getMessage()));
         return RestResponse.status(Response.Status.BAD_REQUEST,  ErrorDto.builder().messages(errors).build());
@@ -40,6 +42,7 @@ public class ExceptionMapper {
 
     @ServerExceptionMapper
     public RestResponse<ErrorDto> internalServerError(WebApplicationException x) {
+        log.debug(x.getMessage(), x);
         List<String> errors = new ArrayList<>();
         errors.add(x.getMessage());
         return RestResponse.status(Response.Status.INTERNAL_SERVER_ERROR,  ErrorDto.builder().messages(errors).build());

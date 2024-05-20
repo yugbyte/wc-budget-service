@@ -36,7 +36,12 @@ public class ExpenseBudgetRepository implements PanacheRepository<ExpenseBudget>
                 .singleResult();
     }
 
-
+    @WithTransaction
+    public Uni<ExpenseBudget> findBudgetForUserWithBudgetName(final int userId, final String budgetName) {
+        return find("userId = :userId and name = :budgetName",
+                Parameters.with("userId", userId).and("budgetName", budgetName).map())
+                .singleResult();
+    }
 
     public Uni<Boolean> deactivateCurrentBudget() {
         return update("#ExpenseBudget.deactivateCurrentBudget", Parameters.with("userId", 1)

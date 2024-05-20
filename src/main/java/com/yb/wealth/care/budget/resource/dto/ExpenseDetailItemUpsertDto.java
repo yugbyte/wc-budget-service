@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 public class ExpenseDetailItemUpsertDto {
@@ -16,6 +18,6 @@ public class ExpenseDetailItemUpsertDto {
     private Double budgetAmount;
     private Boolean isRecurring;
     @NotBlank(message = "Expense Category is Required")
-    private String expenseCategory;
-    private String tags;
+    private String category;
+    private List<String> tags;
 }
