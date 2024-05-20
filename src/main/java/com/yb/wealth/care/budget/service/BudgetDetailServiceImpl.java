@@ -11,7 +11,6 @@ import com.yb.wealth.care.budget.repository.ExpenseBudgetDetailRepository;
 import com.yb.wealth.care.budget.repository.ExpenseBudgetRepository;
 import com.yb.wealth.care.budget.repository.entity.ExpenseBudget;
 import com.yb.wealth.care.budget.repository.entity.ExpenseBudgetDetail;
-import com.yb.wealth.care.budget.resource.dto.BudgetExpenseDetailsBaseItemDto;
 import com.yb.wealth.care.budget.resource.dto.BudgetExpenseDetailsItemDto;
 import com.yb.wealth.care.budget.resource.dto.ExpenseDetailItemUpsertDto;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
@@ -139,7 +138,7 @@ public class BudgetDetailServiceImpl implements BudgetDetailsService {
                                     expenseBudgetDetail.getExpenseName().equalsIgnoreCase(expenseDetailItemUpsertDto.getExpenseName()))
                             .findFirst()
                             .orElseThrow(() -> new NotFoundException(ErrorMessages.ERROR_NO_PERMISSION_NOT_EXIST));
-                    updateBudgetDetail(expenseBudgetDetailExisting, expenseDetailItemUpsertDto);
+                    setNewBudgetDetails(expenseBudgetDetailExisting, expenseDetailItemUpsertDto);
                     return expenseBudget;
                 })
                 .flatMap(expenseBudgetRepository::persist)
@@ -155,7 +154,7 @@ public class BudgetDetailServiceImpl implements BudgetDetailsService {
         return expenseBudget;
     }
 
-    private void updateBudgetDetail(final ExpenseBudgetDetail existingExpenseBudgetDetail,
+    private void setNewBudgetDetails(final ExpenseBudgetDetail existingExpenseBudgetDetail,
                                                    final ExpenseDetailItemUpsertDto expenseDetailItemUpsertDto) {
         ExpenseBudgetDetail expenseBudgetDetailNew = budgetDetailsMapper.toExpenseBudgetDetail(expenseDetailItemUpsertDto);
         if (StringUtils.isNotBlank(expenseBudgetDetailNew.getExpenseName())) {
