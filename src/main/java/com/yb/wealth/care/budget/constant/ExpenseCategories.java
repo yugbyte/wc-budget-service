@@ -3,6 +3,8 @@ package com.yb.wealth.care.budget.constant;
 import com.yb.wealth.care.budget.external.clients.WcUiServiceClient;
 import com.yb.wealth.care.budget.external.clients.dto.ExpenseCategory;
 import io.quarkus.runtime.Startup;
+import io.smallrye.common.annotation.Blocking;
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +14,9 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -32,10 +36,9 @@ public class ExpenseCategories {
 
     @Startup
     public void onInit() {
-        log.info("INIT CATEGORY DATA ");
         defaultExpenseCategory.setIcon("defaultIcon");
         defaultExpenseCategory.setName("defaultName");
-        loadData();
+        refreshDataIfNeeded();
     }
 
     public boolean validate(final String name) {
@@ -51,8 +54,9 @@ public class ExpenseCategories {
 
     private void refreshDataIfNeeded() {
         if (expenseCategoryMap.isEmpty() || isDataExpired()) {
-            lastUpdateTime = loadData().join();
-            log.debug("Expense Category Data Refreshed");
+            log.debug("Initiating loading category data");
+           lastUpdateTime = loadData();
+           log.debug("Expense Category Data Refreshed");
         }
     }
 
@@ -60,24 +64,16 @@ public class ExpenseCategories {
        return Duration.between(lastUpdateTime, Instant.now()).toMinutes() > refreshInterval;
     }
 
-    private CompletableFuture<Instant> loadData() {
-        final CompletableFuture<Instant> future = new CompletableFuture<>();
+    private Instant loadData() {
+        log.debug("Inside loadData()");
         wcUiServiceClient.getExpenseCategories()
                 .onFailure()
-                .retry()
-                .atMost(3)
-                .subscribe()
-                .with(expenseCategoryList -> {
-                     expenseCategoryList
-                             .forEach(expenseCategory -> expenseCategoryMap.put(expenseCategory.getName(), expenseCategory));
-                 },
-                 failure-> {
-                     log.error("Error while getting expense category", failure);
-                     future.complete(Instant.now());
-                 }, () -> {
-                    log.debug("Filled expense categories map");
-                    future.complete(Instant.now());
+                .recoverWithItem(() -> new ArrayList<>())
+                .await()
+                .atMost(Duration.ofMillis(6000))
+                .forEach(expenseCategory -> {
+                    expenseCategoryMap.put(expenseCategory.getName(), expenseCategory);
                  });
-        return future;
+        return Instant.now();
     }
 }

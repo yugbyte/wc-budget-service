@@ -2,6 +2,7 @@ package com.yb.wealth.care.budget.external.clients;
 
 import com.yb.wealth.care.budget.external.clients.dto.ExpenseCategory;
 import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -17,6 +18,6 @@ public interface WcUiServiceClient {
    @GET
    @Path("/categories")
    @Produces(MediaType.APPLICATION_JSON)
-   Multi<List<ExpenseCategory>> getExpenseCategories();
+   Uni<List<ExpenseCategory>> getExpenseCategories();
 
 }

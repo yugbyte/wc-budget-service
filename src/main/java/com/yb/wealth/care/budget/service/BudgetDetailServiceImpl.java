@@ -75,7 +75,7 @@ public class BudgetDetailServiceImpl implements BudgetDetailsService {
     }
 
     private void validateExpenseCategory(String expenseCategory) {
-        if (expenseCategories.validate(expenseCategory)) {
+        if (!expenseCategories.validate(expenseCategory)) {
             throw new BadRequestException(ErrorMessages.ERROR_INVALID_CATEGORY + expenseCategory);
         }
     }
