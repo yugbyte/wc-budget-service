@@ -18,4 +18,6 @@ public class ExpenseBudgetDetailRepository implements PanacheRepository<ExpenseB
     public Uni<List<ExpenseBudgetDetail>> getAllBudgetDetailsByBudgetId(final UUID budgetId) {
         return list("expenseBudget.id", budgetId);
     }
+
+
 }

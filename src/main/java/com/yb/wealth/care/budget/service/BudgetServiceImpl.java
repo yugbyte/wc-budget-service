@@ -59,7 +59,7 @@ public class BudgetServiceImpl implements BudgetService {
                     return budgetDto;
                 })
                 .onFailure()
-                .transform(Unchecked.function(ExceptionHandler::handleGetError));
+                .transform(ExceptionHandler::handleError);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class BudgetServiceImpl implements BudgetService {
                 .replaceWith(expenseBudgetRepository.deactivateCurrentBudget())
                 .flatMap(isSuccess -> this.saveBudget(expenseBudget, uriInfo))
                 .onFailure()
-                .transform(ExceptionHandler::handleInsertError);
+                .transform(ExceptionHandler::handleError);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class BudgetServiceImpl implements BudgetService {
                 .flatMap(expenseBudget -> Uni.createFrom().item(budgetMapper.toBudgetDto(expenseBudget)))
                 .flatMap(expenseBudget -> Uni.createFrom().item(Response.status(Response.Status.OK).entity(expenseBudget).build()))
                 .onFailure()
-                .transform(ExceptionHandler::handleUpsertError);
+                .transform(ExceptionHandler::handleError);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class BudgetServiceImpl implements BudgetService {
                 .flatMap(expenseBudget -> Uni.createFrom().item(budgetMapper.toBudgetDto(expenseBudget)))
                 .flatMap(expenseBudget -> Uni.createFrom().item(Response.status(Response.Status.OK).entity(expenseBudget).build()))
                 .onFailure()
-                .transform(ExceptionHandler::handleUpsertError);
+                .transform(ExceptionHandler::handleError);
     }
 
     private ExpenseBudget setExpenseBudgetWithNewValues(final BudgetBaseDto budgetDto, ExpenseBudget expenseBudget) {

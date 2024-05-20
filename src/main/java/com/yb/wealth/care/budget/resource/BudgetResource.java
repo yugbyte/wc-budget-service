@@ -26,10 +26,8 @@ public interface BudgetResource {
 
     Uni<Response> addBudgetDetailItem(@Valid final ExpenseDetailItemUpsertDto expenseDetailItemUpsertDto);
 
-    Uni<Response> removeBudgetDetailItem(final String budgetId,
-                                         final String budgetDetailItemId);
+    Uni<Response> removeBudgetDetailItem(final String budgetDetailItemId);
 
-    Uni<Response> updateBudgetDetailItem(final String budgetId,
-                                         final String budgetDetailItemId,
-                                         @Valid final BudgetExpenseDetailsBaseItemDto budgetDetailItem);
+    Uni<Response> updateBudgetDetailItem(final String budgetDetailItemId,
+                                         @Valid final ExpenseDetailItemUpsertDto expenseDetailItemUpsertDto);
 }

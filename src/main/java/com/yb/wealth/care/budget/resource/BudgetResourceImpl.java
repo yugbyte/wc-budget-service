@@ -61,7 +61,7 @@ public class BudgetResourceImpl implements BudgetResource {
     @PUT
     @Path("/{budgetId}")
     @Override
-    public Uni<Response> updateBudget(String budgetId, BudgetBaseDto budgetDto, UriInfo uriInfo) {
+    public Uni<Response> updateBudget(final String budgetId, final BudgetBaseDto budgetDto, final UriInfo uriInfo) {
         log.info("UPDATING BUDGET DETAILS FOR {}", budgetId);
         UUID id = CommonUtil.convertToUUID(budgetId)
                 .orElseThrow(() -> new BadRequestException("Invalid Budget Id"));
@@ -71,7 +71,7 @@ public class BudgetResourceImpl implements BudgetResource {
     @PUT
     @Path("/_active")
     @Override
-    public Uni<Response> updateActiveBudget(@Valid BudgetBaseDto budgetDto) {
+    public Uni<Response> updateActiveBudget(@Valid final BudgetBaseDto budgetDto) {
         log.info("UPDATING BUDGET DETAILS FOR ACTIVE BUDGET");
         return budgetService.updateActiveBudget(budgetDto);
     }
@@ -79,19 +79,27 @@ public class BudgetResourceImpl implements BudgetResource {
     @POST
     @Path("/_active")
     @Override
-    public Uni<Response> addBudgetDetailItem(@Valid ExpenseDetailItemUpsertDto expenseDetailItemUpsertDto) {
+    public Uni<Response> addBudgetDetailItem(@Valid final ExpenseDetailItemUpsertDto expenseDetailItemUpsertDto) {
         log.info("ADDING BUDGET DETAIL ITEM");
         return budgetDetailsService.addBudgetDetailItem(expenseDetailItemUpsertDto);
     }
 
+    @DELETE
+    @Path("/_active/{budgetDetailItemId}")
     @Override
-    public Uni<Response> removeBudgetDetailItem(String budgetId, String budgetDetailItemId) {
-        return null;
+    public Uni<Response> removeBudgetDetailItem(final String budgetDetailItemId) {
+        UUID id = CommonUtil.convertToUUID(budgetDetailItemId)
+                .orElseThrow(() -> new BadRequestException("Invalid Request. Check again."));
+        return budgetDetailsService.removeBudgetDetailItem(id);
     }
 
+    @PUT
+    @Path("/_active/{budgetDetailItemId}")
     @Override
-    public Uni<Response> updateBudgetDetailItem(String budgetId, String budgetDetailItemId, BudgetExpenseDetailsBaseItemDto budgetDetailItem) {
-        return null;
+    public Uni<Response> updateBudgetDetailItem(final String budgetDetailItemId,  final ExpenseDetailItemUpsertDto expenseDetailItemUpsertDto) {
+        UUID id = CommonUtil.convertToUUID(budgetDetailItemId)
+                .orElseThrow(() -> new BadRequestException("Invalid Request. Check again."));
+        return budgetDetailsService.updateBudgetDetailItem(id, expenseDetailItemUpsertDto);
     }
 
 }

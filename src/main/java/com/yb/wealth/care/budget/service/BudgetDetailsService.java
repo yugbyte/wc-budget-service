@@ -16,5 +16,5 @@ public interface BudgetDetailsService {
     Uni<Response> removeBudgetDetailItem(final UUID budgetDetailItemId);
 
     Uni<Response> updateBudgetDetailItem(final UUID budgetDetailItemId,
-                                         final BudgetExpenseDetailsBaseItemDto budgetDetailItem);
+                                         final ExpenseDetailItemUpsertDto expenseDetailItemUpsertDto);
 }
