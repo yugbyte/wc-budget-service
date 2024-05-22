@@ -14,7 +14,7 @@ import java.util.UUID;
 @Table(name = "expense_budget", schema = "budget")
 @Entity
 @ToString
-@NamedQuery(name = "ExpenseBudget.deactivateCurrentBudget", query = "UPDATE ExpenseBudget e SET e.status=:newStatus WHERE e.userId= :userId AND e.status = :currentStatus")
+@NamedQuery(name = "ExpenseBudget.deactivateCurrentBudgetForUser", query = "UPDATE ExpenseBudget e SET e.status=:newStatus WHERE e.userId= :userId AND e.status = :currentStatus")
 public class ExpenseBudget {
     @Id
     @GeneratedValue

@@ -8,12 +8,14 @@ import io.quarkus.panache.common.Parameters;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.Cacheable;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.UUID;
 
 @Cacheable
 @ApplicationScoped
+@Slf4j
 public class ExpenseBudgetRepository implements PanacheRepository<ExpenseBudget> {
 
     @WithTransaction
@@ -43,13 +45,13 @@ public class ExpenseBudgetRepository implements PanacheRepository<ExpenseBudget>
                 .singleResult();
     }
 
-    public Uni<Boolean> deactivateCurrentBudget() {
-        return update("#ExpenseBudget.deactivateCurrentBudget", Parameters.with("userId", 1)
+    public Uni<Boolean> deactivateCurrentBudgetForUser(final int userId) {
+        log.info("De-Activating current budget for user {}", userId);
+        return update("#ExpenseBudget.deactivateCurrentBudgetForUser", Parameters.with("userId", userId)
                         .and("newStatus", BudgetStatus.I.name())
                         .and("currentStatus", BudgetStatus.A.name())
-                )
-                .onItem()
-                .transform(status ->  status > 0);
+                ).onItem()
+                .transform(status -> status > 0);
     }
 
 }

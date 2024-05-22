@@ -16,6 +16,7 @@ import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.unchecked.Unchecked;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.NoResultException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
@@ -75,8 +76,18 @@ public class BudgetServiceImpl implements BudgetService {
                 .onItem()
                 .ifNotNull()
                 .failWith(() -> new BadRequestException(String.format(ErrorMessages.ERROR_DUPLICATE_BUDGET, budgetBaseDto.getName())))
-                .replaceWith(expenseBudgetRepository.deactivateCurrentBudget())
-                .flatMap(isSuccess -> this.saveBudget(expenseBudget, uriInfo))
+                .onFailure(NoResultException.class)
+                .recoverWithNull()
+                .flatMap(item ->{
+                    log.info("De activating Current Budget for User");
+                   return expenseBudgetRepository.deactivateCurrentBudgetForUser(1);
+                })
+                .flatMap(Unchecked.function(isSuccess -> {
+                    if (isSuccess) {
+                        return this.saveBudget(expenseBudget, uriInfo);
+                    }
+                    throw new WebApplicationException(ErrorMessages.UNKNOWN_ERROR);
+                }))
                 .onFailure()
                 .transform(ExceptionHandler::handleError);
     }
