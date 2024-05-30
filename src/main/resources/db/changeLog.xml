@@ -42,7 +42,7 @@
                              references="budget.expense_budget(id)" />
             </column>
             <column name="expense_name" type="text">
-                <constraints nullable="false" unique="true" uniqueConstraintName="expense_budget_detail_exp_name_idx" />
+                <constraints nullable="false"  uniqueConstraintName="expense_budget_detail_exp_name_notnull" />
             </column>
             <column name="budget_amount" type="double precision" defaultValue="0.0">
                 <constraints nullable="false" />
@@ -58,12 +58,17 @@
             </column>
         </createTable>
     </changeSet>
-
     <changeSet id="3" author="liquibase">
+        <addUniqueConstraint schemaName="budget" tableName="expense_budget_detail" columnNames="expense_name, expense_budget_id"
+                             constraintName="uq_expense_name"/>
+    </changeSet>
+    <changeSet id="4" author="liquibase">
         <sql>
             ALTER TABLE budget.expense_budget OWNER TO roach;
             ALTER TABLE budget.expense_budget_detail OWNER TO roach;
         </sql>
     </changeSet>
+
+
 
 </databaseChangeLog>

@@ -67,12 +67,11 @@ public class ExpenseCategories {
     private Instant loadData() {
         log.debug("Inside loadData()");
         wcUiServiceClient.getExpenseCategories()
-                .onFailure()
-                .recoverWithItem(() -> new ArrayList<>())
-                .await()
-                .atMost(Duration.ofMillis(6000))
-                .forEach(expenseCategory -> {
-                    expenseCategoryMap.put(expenseCategory.getName(), expenseCategory);
+                .subscribe()
+                .with(expenseCategories -> {
+                    expenseCategories.forEach( expenseCategory ->
+                        expenseCategoryMap.put(expenseCategory.getName(), expenseCategory)
+                    );
                  });
         return Instant.now();
     }

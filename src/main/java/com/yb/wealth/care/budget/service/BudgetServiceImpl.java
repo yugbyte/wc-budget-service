@@ -79,14 +79,12 @@ public class BudgetServiceImpl implements BudgetService {
                 .onFailure(NoResultException.class)
                 .recoverWithNull()
                 .flatMap(item ->{
-                    log.info("De activating Current Budget for User");
+                   log.info("De activating Current Budget for User");
                    return expenseBudgetRepository.deactivateCurrentBudgetForUser(1);
                 })
                 .flatMap(Unchecked.function(isSuccess -> {
-                    if (isSuccess) {
-                        return this.saveBudget(expenseBudget, uriInfo);
-                    }
-                    throw new WebApplicationException(ErrorMessages.UNKNOWN_ERROR);
+                    log.info("Current User Budget Deactivation: {}", isSuccess);
+                    return this.saveBudget(expenseBudget, uriInfo);
                 }))
                 .onFailure()
                 .transform(ExceptionHandler::handleError);
